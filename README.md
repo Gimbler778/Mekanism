@@ -1,246 +1,186 @@
-# Mekanism ATS — Phase 1
+# Mekanism ATS
 
-**Internal Applicant Tracking System for Vendor Management**  
-Prepared for: Mekanism Technologies | Date: April 2026
+Internal Applicant Tracking System for vendor-driven hiring workflows.
 
----
+## Overview
 
-## Phase 1 Deliverables
+Mekanism ATS is a full-stack platform for managing:
 
-| # | Deliverable | Status | Location |
-|---|-------------|--------|----------|
-| 1 | User Stories (20 stories, P0–P2) | ✅ Complete | `docs/USER_STORIES.md` |
-| 2 | Interactive Wireframes (8 screens) | ✅ Complete | `docs/wireframes.html` |
-| 3 | Backend Foundation (Node.js + DrizzleORM + PostgreSQL) | ✅ Complete | `backend/` |
-| 4 | Frontend Framework (React + shadcn + Tailwind) | ✅ Complete | `frontend/` |
+- vendor onboarding and performance
+- requisition intake and approvals
+- candidate submissions and status flow
+- hiring analytics and reporting
 
----
+The repository is split into:
 
-## Technology Stack
+- `backend/` - Express API, PostgreSQL, Drizzle ORM
+- `frontend/` - React + TypeScript + Vite + Tailwind UI
+- `docs/` - user stories and wireframes
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui |
-| Backend | Node.js (ESM), Express.js |
-| ORM | DrizzleORM |
-| Database | PostgreSQL |
-| Cloud | Amazon Web Services (deployment-ready) |
-| Authentication | JWT + Google OAuth 2.0 (SSO) |
-| State Management | TanStack Query (React Query) |
-| Charts | Recharts |
-| Form Handling | React Hook Form + Zod |
+## Tech Stack
 
----
+### Frontend
+
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- TanStack Query
+- Recharts
+
+### Backend
+
+- Node.js (ESM)
+- Express
+- Drizzle ORM
+- PostgreSQL
+- JWT auth + Google OAuth (Passport)
 
 ## Project Structure
 
-```
+```text
 mekanism-ats/
-├── backend/
-│   ├── src/
-│   │   ├── db/
-│   │   │   ├── index.js          # PostgreSQL connection pool (DrizzleORM)
-│   │   │   └── schema.js         # Complete database schema (all tables + relations)
-│   │   ├── middleware/
-│   │   │   ├── auth.js           # JWT authentication + role authorization
-│   │   │   └── auditLog.js       # Automatic audit logging middleware
-│   │   ├── controllers/
-│   │   │   ├── authController.js       # Login, register, OAuth callback, /me
-│   │   │   ├── vendorController.js     # CRUD + performance metrics
-│   │   │   ├── requisitionController.js # CRUD + approval + vendor assignment
-│   │   │   ├── candidateController.js   # Submit, list, status update
-│   │   │   └── analyticsController.js   # Dashboard, vendor report, funnel
-│   │   ├── routes/
-│   │   │   └── index.js          # All API routes with auth guards
-│   │   └── index.js              # Express server entry point
-│   ├── drizzle.config.js
-│   ├── package.json
-│   └── .env.example
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── AppLayout.tsx     # Sidebar + topbar shell
-│   │   ├── hooks/
-│   │   │   └── useAuth.tsx       # Auth context, login, logout
-│   │   ├── lib/
-│   │   │   ├── api.ts            # Axios client + typed API functions
-│   │   │   └── utils.ts          # cn(), formatDate(), STATUS_COLORS
-│   │   ├── pages/
-│   │   │   ├── LoginPage.tsx     # Login form + Google SSO button
-│   │   │   ├── DashboardPage.tsx # Stat cards + pipeline chart + top vendors
-│   │   │   ├── VendorsPage.tsx   # Vendor list + registration form
-│   │   │   ├── RequisitionsPage.tsx # Requisition list + create/approve
-│   │   │   ├── SubmissionsPage.tsx  # Candidate pipeline + submit form
-│   │   │   └── AnalyticsPage.tsx    # Funnel + vendor report table + charts
-│   │   ├── App.tsx               # Router + QueryClient + AuthProvider
-│   │   ├── main.tsx
-│   │   └── index.css             # Tailwind + CSS variables (shadcn theme)
-│   ├── tailwind.config.js
-│   ├── vite.config.ts
-│   └── package.json
-│
-└── docs/
-    ├── USER_STORIES.md            # 20 user stories across 6 modules
-    └── wireframes.html            # Interactive 8-screen wireframe prototype
+  backend/
+    src/
+      config/
+      controllers/
+      db/
+      middleware/
+      routes/
+      utils/
+      index.js
+    drizzle/
+    drizzle.config.js
+    package.json
+  frontend/
+    src/
+      components/
+      hooks/
+      lib/
+      pages/
+      App.tsx
+      main.tsx
+      index.css
+    package.json
+    tsconfig.json
+    vite.config.ts
+  docs/
+    USER_STORIES.md
+    wireframes.html
 ```
 
----
+## Prerequisites
 
-## Database Schema (DrizzleORM)
-
-### Tables
-
-| Table | Description |
-|-------|-------------|
-| `users` | All users — Admin, HR, Hiring Manager, Vendor |
-| `vendors` | Vendor company profiles |
-| `vendor_contacts` | Contact persons per vendor |
-| `vendor_users` | Link between vendor org and user accounts |
-| `job_requisitions` | Job openings with full details |
-| `requisition_vendors` | Vendors assigned to each requisition |
-| `candidates` | Candidate profiles (email, resume, skills, etc.) |
-| `candidate_submissions` | One submission per candidate per requisition per vendor |
-| `submission_status_history` | Full audit trail of candidate stage changes |
-| `interviews` | Interview records with feedback and rating |
-| `audit_logs` | System-wide audit log of all actions |
-
-### Enums
-
-- **user_role**: `admin`, `hr`, `hiring_manager`, `vendor`
-- **vendor_status**: `pending`, `active`, `inactive`, `blacklisted`
-- **requisition_status**: `draft`, `pending_approval`, `approved`, `open`, `on_hold`, `closed`, `cancelled`
-- **candidate_status**: `submitted`, `screened`, `shortlisted`, `interview_scheduled`, `interview_completed`, `offer_extended`, `hired`, `rejected`, `withdrawn`
-- **interview_type**: `phone_screen`, `technical`, `hr`, `final`, `panel`
-
----
-
-## API Endpoints
-
-### Auth
-| Method | Endpoint | Access |
-|--------|----------|--------|
-| POST | `/api/auth/register` | Public |
-| POST | `/api/auth/login` | Public |
-| GET | `/api/auth/me` | Authenticated |
-| GET | `/api/auth/google` | Public (OAuth redirect) |
-| GET | `/api/auth/google/callback` | Public |
-
-### Vendors
-| Method | Endpoint | Access |
-|--------|----------|--------|
-| GET | `/api/vendors` | Admin, HR, Hiring Manager |
-| POST | `/api/vendors` | Admin, HR |
-| GET | `/api/vendors/:id` | Admin, HR, Hiring Manager |
-| PATCH | `/api/vendors/:id` | Admin, HR |
-| GET | `/api/vendors/:id/performance` | Authenticated |
-
-### Requisitions
-| Method | Endpoint | Access |
-|--------|----------|--------|
-| GET | `/api/requisitions` | Authenticated |
-| POST | `/api/requisitions` | Admin, HR, Hiring Manager |
-| GET | `/api/requisitions/:id` | Authenticated |
-| PATCH | `/api/requisitions/:id` | Admin, HR, Hiring Manager |
-| POST | `/api/requisitions/:id/approve` | Admin, HR |
-| POST | `/api/requisitions/:id/vendors` | Admin, HR |
-
-### Submissions & Candidates
-| Method | Endpoint | Access |
-|--------|----------|--------|
-| POST | `/api/submissions` | Authenticated |
-| GET | `/api/submissions` | Authenticated |
-| PATCH | `/api/submissions/:id/status` | Admin, HR, Hiring Manager |
-| GET | `/api/candidates/:id` | Authenticated |
-
-### Analytics
-| Method | Endpoint | Access |
-|--------|----------|--------|
-| GET | `/api/analytics/dashboard` | Admin, HR, Hiring Manager |
-| GET | `/api/analytics/vendor-report` | Admin, HR |
-| GET | `/api/analytics/hiring-funnel` | Admin, HR, Hiring Manager |
-
----
-
-## Setup & Running
-
-### Prerequisites
 - Node.js 20+
+- npm 10+
 - PostgreSQL 15+
-- npm or yarn
 
-### 1. Database Setup
+## Quick Start
+
+### 1. Clone and install dependencies
+
 ```bash
-createdb mekanism_ats
+# from repository root
+cd backend && npm install
+cd ../frontend && npm install
 ```
 
-### 2. Backend Setup
+### 2. Configure backend environment
+
 ```bash
 cd backend
-npm install
 cp .env.example .env
-# Edit .env with your DATABASE_URL, JWT_SECRET, Google OAuth credentials
-npm run db:generate   # Generate migration files
-npm run db:migrate    # Apply migrations
-npm run dev           # Start on http://localhost:3001
 ```
 
-### 3. Frontend Setup
+Update `.env` values for:
+
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `SESSION_SECRET`
+
+### 3. Create database and run migrations
+
+```bash
+# create DB once
+createdb mekanism_ats
+
+# apply schema
+cd backend
+npm run db:generate
+npm run db:migrate
+```
+
+### 4. Run both apps
+
+Backend:
+
+```bash
+cd backend
+npm run dev
+```
+
+Frontend:
+
 ```bash
 cd frontend
-npm install
-npm run dev           # Start on http://localhost:5173
+npm run dev
 ```
 
-### 4. View Wireframes
-Open `docs/wireframes.html` in any browser — no server needed.
+Default local URLs:
 
-### 5. View User Stories
-Open `docs/USER_STORIES.md` in any markdown viewer.
+- API: `http://localhost:3001`
+- API health: `http://localhost:3001/health`
+- Frontend: `http://localhost:5173`
 
----
+## Scripts
 
-## Environment Variables (Backend)
+### Backend (`backend/package.json`)
 
-```env
-DATABASE_URL=postgresql://user:password@localhost:5432/mekanism_ats
-JWT_SECRET=your-super-secret-key
-JWT_EXPIRES_IN=7d
-PORT=3001
-NODE_ENV=development
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_CALLBACK_URL=http://localhost:3001/api/auth/google/callback
-SESSION_SECRET=your-session-secret
-FRONTEND_URL=http://localhost:5173
-```
+- `npm run dev` - start API with nodemon
+- `npm run start` - start API with node
+- `npm run db:generate` - generate Drizzle migrations
+- `npm run db:migrate` - apply migrations
+- `npm run db:studio` - open Drizzle Studio
 
----
+### Frontend (`frontend/package.json`)
 
-## Role Permissions Summary
+- `npm run dev` - start Vite dev server
+- `npm run build` - TypeScript check + production build
+- `npm run preview` - preview production build locally
 
-| Feature | Admin | HR | Hiring Manager | Vendor |
-|---------|-------|----|----------------|--------|
-| View Dashboard | ✅ | ✅ | ✅ | ❌ |
-| Manage Vendors | ✅ | ✅ | View only | ❌ |
-| Create Requisitions | ✅ | ✅ | ✅ | ❌ |
-| Approve Requisitions | ✅ | ✅ | ❌ | ❌ |
-| View Assigned Requisitions | ✅ | ✅ | ✅ | ✅ |
-| Submit Candidates | ✅ | ✅ | ❌ | ✅ |
-| Update Candidate Status | ✅ | ✅ | ✅ | ❌ |
-| View Analytics | ✅ | ✅ | ✅ | ❌ |
-| View Audit Logs | ✅ | ❌ | ❌ | ❌ |
+## Core API Areas
 
----
+- `POST /api/auth/login`
+- `POST /api/auth/register`
+- `GET /api/auth/me`
+- `GET /api/vendors`
+- `POST /api/vendors`
+- `GET /api/requisitions`
+- `POST /api/requisitions`
+- `GET /api/submissions`
+- `POST /api/submissions`
+- `GET /api/analytics/dashboard`
 
-## AWS Deployment Notes (Phase 2)
+## Roles
 
-- **Frontend**: S3 + CloudFront (static hosting)
-- **Backend**: EC2 or ECS Fargate behind ALB
-- **Database**: RDS PostgreSQL (Multi-AZ for production)
-- **Secrets**: AWS Secrets Manager for env variables
-- **CI/CD**: GitHub Actions → CodePipeline
+System supports these roles:
 
----
+- `admin`
+- `hr`
+- `hiring_manager`
+- `vendor`
 
-*Phase 1 complete. Ready for shortlisting review before Phase 2 development.*
+Authorization is enforced in backend middleware and route guards.
+
+## Documentation
+
+- User stories: `docs/USER_STORIES.md`
+- Wireframes: `docs/wireframes.html`
+
+## Notes
+
+- CORS origin is controlled by `FRONTEND_URL` in backend `.env`.
+- JWT is expected in `Authorization: Bearer <token>` for protected routes.
+- Frontend uses `/api` base URL and assumes backend is reachable by same origin or proxy configuration.

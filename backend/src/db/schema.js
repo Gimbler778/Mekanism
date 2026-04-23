@@ -322,6 +322,52 @@ export const jobRequisitionsRelations = relations(
   })
 );
 
+export const candidatesRelations = relations(candidates, ({ many }) => ({
+  submissions: many(candidateSubmissions),
+}));
+
+export const vendorContactsRelations = relations(
+  vendorContacts,
+  ({ one }) => ({
+    vendor: one(vendors, {
+      fields: [vendorContacts.vendorId],
+      references: [vendors.id],
+    }),
+  })
+);
+
+export const vendorUsersRelations = relations(
+  vendorUsers,
+  ({ one }) => ({
+    vendor: one(vendors, {
+      fields: [vendorUsers.vendorId],
+      references: [vendors.id],
+    }),
+    user: one(users, {
+      fields: [vendorUsers.userId],
+      references: [users.id],
+    }),
+  })
+);
+
+export const requisitionVendorsRelations = relations(
+  requisitionVendors,
+  ({ one }) => ({
+    requisition: one(jobRequisitions, {
+      fields: [requisitionVendors.requisitionId],
+      references: [jobRequisitions.id],
+    }),
+    vendor: one(vendors, {
+      fields: [requisitionVendors.vendorId],
+      references: [vendors.id],
+    }),
+    assignedBy: one(users, {
+      fields: [requisitionVendors.assignedById],
+      references: [users.id],
+    }),
+  })
+);
+
 export const candidateSubmissionsRelations = relations(
   candidateSubmissions,
   ({ one, many }) => ({
@@ -345,3 +391,38 @@ export const candidateSubmissionsRelations = relations(
     interviews: many(interviews),
   })
 );
+
+export const submissionStatusHistoryRelations = relations(
+  submissionStatusHistory,
+  ({ one }) => ({
+    submission: one(candidateSubmissions, {
+      fields: [submissionStatusHistory.submissionId],
+      references: [candidateSubmissions.id],
+    }),
+    changedBy: one(users, {
+      fields: [submissionStatusHistory.changedById],
+      references: [users.id],
+    }),
+  })
+);
+
+export const interviewsRelations = relations(
+  interviews,
+  ({ one }) => ({
+    submission: one(candidateSubmissions, {
+      fields: [interviews.submissionId],
+      references: [candidateSubmissions.id],
+    }),
+    scheduledBy: one(users, {
+      fields: [interviews.scheduledById],
+      references: [users.id],
+    }),
+  })
+);
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [auditLogs.userId],
+    references: [users.id],
+  }),
+}));

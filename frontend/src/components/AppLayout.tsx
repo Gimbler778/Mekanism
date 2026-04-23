@@ -26,6 +26,12 @@ export const AppLayout = () => {
   const initials = user
     ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
     : "??";
+  const avatarSeed = user
+    ? encodeURIComponent(`${user.firstName}-${user.lastName}-${user.email}`)
+    : "guest";
+  const avatarUrl =
+    user?.avatarUrl ||
+    `https://api.dicebear.com/9.x/initials/svg?seed=${avatarSeed}`;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -68,7 +74,19 @@ export const AppLayout = () => {
         {/* User section */}
         <div className="p-3 border-t border-border">
           <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent cursor-pointer group">
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <img
+              src={avatarUrl}
+              alt={`${user?.firstName || "User"} avatar`}
+              className="h-8 w-8 rounded-full object-cover flex-shrink-0 bg-primary/10"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
+                if (fallback) fallback.style.display = "flex";
+              }}
+            />
+            <div
+              className="h-8 w-8 rounded-full bg-primary/10 items-center justify-center flex-shrink-0 hidden"
+            >
               <span className="text-xs font-semibold text-primary">{initials}</span>
             </div>
             <div className="flex-1 min-w-0">
@@ -94,10 +112,20 @@ export const AppLayout = () => {
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
         <header className="h-16 border-b border-border bg-card flex items-center justify-end px-6 gap-3 flex-shrink-0">
-          <button className="h-9 w-9 rounded-md border border-border flex items-center justify-center hover:bg-accent transition-colors">
+          <button
+            type="button"
+            aria-label="Open notifications"
+            title="Notifications"
+            className="h-9 w-9 rounded-md border border-border flex items-center justify-center hover:bg-accent transition-colors"
+          >
             <Bell className="h-4 w-4 text-muted-foreground" />
           </button>
-          <button className="h-9 w-9 rounded-md border border-border flex items-center justify-center hover:bg-accent transition-colors">
+          <button
+            type="button"
+            aria-label="Open settings"
+            title="Settings"
+            className="h-9 w-9 rounded-md border border-border flex items-center justify-center hover:bg-accent transition-colors"
+          >
             <Settings className="h-4 w-4 text-muted-foreground" />
           </button>
         </header>

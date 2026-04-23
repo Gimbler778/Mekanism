@@ -8,6 +8,8 @@ import { VendorsPage } from "./pages/VendorsPage";
 import { RequisitionsPage } from "./pages/RequisitionsPage";
 import { SubmissionsPage } from "./pages/SubmissionsPage";
 import { AnalyticsPage } from "./pages/AnalyticsPage";
+import { AuthCallbackPage } from "./pages/AuthCallbackPage";
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +34,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/callback" element={<AuthCallbackPage />} />
             <Route
               path="/"
               element={

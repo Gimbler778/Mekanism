@@ -100,9 +100,11 @@ export const DashboardPage = () => {
                       </span>
                     </div>
                     <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary rounded-full"
-                        style={{ width: `${Math.min(Number(v.hiringRatio), 100)}%` }}
+                      <progress
+                        className="h-full w-full [&::-webkit-progress-bar]:bg-secondary [&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:bg-primary"
+                        max={100}
+                        value={Math.min(Number(v.hiringRatio), 100)}
+                        aria-label={`${v.companyName} hiring ratio`}
                       />
                     </div>
                   </div>

@@ -5,6 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import session from "express-session";
 import routes from "./routes/index.js";
+import passport from "./config/passport.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -32,6 +33,8 @@ app.use(
     },
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/health", (req, res) => {

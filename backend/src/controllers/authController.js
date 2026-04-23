@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { db } from "../db/index.js";
 import { users } from "../db/schema.js";
 import { eq } from "drizzle-orm";
+import { generateAvatarUrl } from "../utils/avatarGenerator.js";
 
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
@@ -25,6 +26,7 @@ export const register = async (req, res, next) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
+    const avatarUrl = generateAvatarUrl(email.toLowerCase());
 
     const [user] = await db
       .insert(users)
@@ -34,6 +36,7 @@ export const register = async (req, res, next) => {
         firstName,
         lastName,
         role: role || "hr",
+        avatarUrl,
       })
       .returning({
         id: users.id,
@@ -41,6 +44,7 @@ export const register = async (req, res, next) => {
         firstName: users.firstName,
         lastName: users.lastName,
         role: users.role,
+        avatarUrl: users.avatarUrl,
       });
 
     const token = generateToken(user.id);

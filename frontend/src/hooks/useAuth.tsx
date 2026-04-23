@@ -14,6 +14,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  completeOAuthLogin: (token: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -44,6 +45,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(user);
   };
 
+  const completeOAuthLogin = async (token: string) => {
+    localStorage.setItem("ats_token", token);
+    try {
+      const res = await authApi.me();
+      setUser(res.data.data);
+    } catch (err) {
+      localStorage.removeItem("ats_token");
+      setUser(null);
+      throw err;
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("ats_token");
     setUser(null);
@@ -51,7 +64,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, logout, isAuthenticated: !!user }}
+      value={{
+        user,
+        isLoading,
+        login,
+        completeOAuthLogin,
+        logout,
+        isAuthenticated: !!user,
+      }}
     >
       {children}
     </AuthContext.Provider>

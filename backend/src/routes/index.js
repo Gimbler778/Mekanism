@@ -1,4 +1,5 @@
 import { Router } from "express";
+import passport from "../config/passport.js";
 import * as authController from "../controllers/authController.js";
 import * as vendorController from "../controllers/vendorController.js";
 import * as requisitionController from "../controllers/requisitionController.js";
@@ -13,7 +14,18 @@ const router = Router();
 router.post("/auth/register", authController.register);
 router.post("/auth/login", authController.login);
 router.get("/auth/me", authenticate, authController.me);
-
+router.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  })
+);
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { session: false, failureRedirect: "/login" }),
+  authController.googleCallback
+);
 // ─── Vendors ──────────────────────────────────────────────────────────────────
 router.get(
   "/vendors",
