@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mekanism ATS — Wireframes</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --primary: #2563eb;
+    --primary-light: #eff6ff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --muted-bg: #f1f5f9;
+    --success: #16a34a;
+    --success-bg: #dcfce7;
+    --warning: #d97706;
+    --warning-bg: #fef3c7;
+    --danger: #dc2626;
+    --danger-bg: #fee2e2;
+    --purple: #7c3aed;
+    --purple-bg: #ede9fe;
+    --sidebar-w: 220px;
+    --topbar-h: 56px;
+  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+  /* Nav tabs */
+  .wf-nav { background: var(--text); padding: 16px 24px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .wf-nav span { color: #94a3b8; font-size: 12px; margin-right: 8px; font-weight: 600; letter-spacing: .5px; }
+  .wf-tab { padding: 6px 14px; border-radius: 6px; border: 1px solid #334155; background: transparent; color: #94a3b8; cursor: pointer; font-size: 12px; transition: all .15s; white-space: nowrap; }
+  .wf-tab:hover { background: #1e293b; color: #e2e8f0; }
+  .wf-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+  /* Screens */
+  .screen { display: none; }
+  .screen.active { display: flex; flex-direction: column; min-height: calc(100vh - 56px); }
+
+  /* App shell */
+  .shell { display: flex; flex: 1; }
+  .sidebar { width: var(--sidebar-w); background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+  .sidebar-logo { padding: 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .logo-text { font-size: 13px; font-weight: 600; }
+  .logo-sub { font-size: 11px; color: var(--muted); }
+  .sidebar-nav { padding: 12px 8px; flex: 1; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; color: var(--muted); font-size: 13px; cursor: pointer; margin-bottom: 2px; transition: all .15s; }
+  .nav-item:hover { background: var(--muted-bg); color: var(--text); }
+  .nav-item.active { background: var(--primary); color: white; font-weight: 500; }
+  .nav-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .sidebar-user { padding: 12px; border-top: 1px solid var(--border); }
+  .user-card { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; cursor: pointer; }
+  .user-card:hover { background: var(--muted-bg); }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .user-name { font-size: 12px; font-weight: 500; }
+  .user-role { font-size: 11px; color: var(--muted); }
+
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { height: var(--topbar-h); background: var(--card); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; padding: 0 24px; gap: 10px; }
+  .icon-btn { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 14px; }
+  .content { padding: 24px; flex: 1; overflow-y: auto; }
+
+  /* Page header */
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+  .page-title { font-size: 20px; font-weight: 700; }
+  .page-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .btn { padding: 8px 14px; border-radius: 6px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: opacity .15s; }
+  .btn:hover { opacity: .85; }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+
+  /* Stat cards */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; display: flex; align-items: flex-start; gap: 12px; }
+  .stat-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .stat-val { font-size: 22px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* Chart placeholder */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+  .chart-placeholder { background: var(--muted-bg); border-radius: 8px; display: flex; align-items: flex-end; justify-content: space-around; padding: 12px 8px 0; height: 130px; gap: 6px; }
+  .bar { border-radius: 4px 4px 0 0; flex: 1; }
+
+  /* Table */
+  .table-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .table-toolbar { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+  .search-box { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--muted-bg); border-radius: 6px; padding: 7px 12px; font-size: 13px; color: var(--muted); }
+  .filter-select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; color: var(--muted); background: var(--card); }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--muted-bg); }
+  th { padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 500; color: var(--muted); }
+  td { padding: 12px 16px; font-size: 13px; border-top: 1px solid var(--border); }
+  tr:hover td { background: #f8fafc; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+  .badge-green { background: var(--success-bg); color: var(--success); }
+  .badge-yellow { background: var(--warning-bg); color: var(--warning); }
+  .badge-red { background: var(--danger-bg); color: var(--danger); }
+  .badge-blue { background: var(--primary-light); color: var(--primary); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); }
+  .badge-gray { background: var(--muted-bg); color: var(--muted); }
+  .company-cell { display: flex; align-items: center; gap: 10px; }
+  .company-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .link-action { color: var(--primary); font-size: 12px; font-weight: 500; cursor: pointer; }
+
+  /* Login screen */
+  .login-split { display: flex; min-height: 100vh; }
+  .login-left { width: 45%; background: var(--primary); padding: 40px; display: flex; flex-direction: column; justify-content: space-between; }
+  .login-right { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .login-form { width: 360px; }
+  .login-heading { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .login-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+  .form-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; background: var(--card); }
+  .btn-block { width: 100%; justify-content: center; padding: 10px; }
+  .divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-text { font-size: 11px; color: var(--muted); }
+  .google-btn { width: 100%; padding: 9px 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; }
+  .hero-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 32px; }
+  .hero-stat { background: rgba(255,255,255,.12); border-radius: 10px; padding: 14px; }
+  .hero-val { font-size: 22px; font-weight: 700; color: white; }
+  .hero-lbl { font-size: 11px; color: rgba(255,255,255,.65); margin-top: 2px; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .modal { background: var(--card); border-radius: 12px; width: 520px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+  .modal-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .modal-title { font-size: 15px; font-weight: 600; }
+  .modal-close { color: var(--muted); cursor: pointer; font-size: 18px; }
+  .modal-body { padding: 20px; }
+  .modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group-modal { margin-bottom: 12px; }
+  .form-input-modal { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
+  textarea.form-input-modal { resize: none; }
+  .form-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .form-section-title { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* Pipeline chips */
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .chip { padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border); font-size: 12px; font-weight: 500; cursor: pointer; background: var(--card); }
+  .chip.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+  /* Analytics */
+  .funnel-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .funnel-label { width: 140px; font-size: 12px; color: var(--muted); text-align: right; flex-shrink: 0; }
+  .funnel-track { flex: 1; height: 22px; background: var(--muted-bg); border-radius: 4px; overflow: hidden; }
+  .funnel-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: white; font-weight: 600; }
+  .funnel-count { width: 32px; font-size: 12px; font-weight: 600; text-align: right; }
+
+  /* Wireframe label */
+  .wf-label { background: #fef9c3; border: 1px solid #fde68a; color: #92400e; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="wf-nav">
+  <span>WIREFRAMES</span>
+  <button class="wf-tab active" onclick="show('login')">Login</button>
+  <button class="wf-tab" onclick="show('dashboard')">Dashboard</button>
+  <button class="wf-tab" onclick="show('vendors')">Vendors</button>
+  <button class="wf-tab" onclick="show('vendor-form')">Add Vendor</button>
+  <button class="wf-tab" onclick="show('requisitions')">Requisitions</button>
+  <button class="wf-tab" onclick="show('req-form')">New Requisition</button>
+  <button class="wf-tab" onclick="show('candidates')">Candidates</button>
+  <button class="wf-tab" onclick="show('analytics')">Analytics</button>
+</div>
+
+<!-- ═══════════════════════════════ LOGIN ═══════════════════════════════ -->
+<div class="screen active" id="screen-login">
+  <div class="login-split">
+    <div class="login-left">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:32px">
+          <div class="logo-icon">M</div>
+          <span style="color:white;font-size:16px;font-weight:600">Mekanism ATS</span>
+        </div>
+        <h1 style="color:white;font-size:28px;font-weight:700;line-height:1.3">Streamline your<br>vendor hiring<br>workflow</h1>
+        <p style="color:rgba(255,255,255,.65);margin-top:12px;font-size:13px;line-height:1.6">Centralized applicant tracking for vendor management, candidate submissions, and hiring analytics.</p>
+        <div class="hero-stat-grid">
+          <div class="hero-stat"><div class="hero-val">50+</div><div class="hero-lbl">Vendors Managed</div></div>
+          <div class="hero-stat"><div class="hero-val">2,400+</div><div class="hero-lbl">Candidates Tracked</div></div>
+          <div class="hero-stat"><div class="hero-val">180+</div><div class="hero-lbl">Roles Filled</div></div>
+          <div class="hero-stat"><div class="hero-val">60%</div><div class="hero-lbl">Time Saved</div></div>
+        </div>
+      </div>
+      <p style="color:rgba(255,255,255,.4);font-size:11px">© 2026 Mekanism Technologies</p>
+    </div>
+    <div class="login-right">
+      <div class="login-form">
+        <h2 class="login-heading">Welcome back</h2>
+        <p class="login-sub">Sign in to your account to continue</p>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" placeholder="you@mekanism.tech" value="admin@mekanism.tech" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" placeholder="••••••••" value="••••••••" />
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-top:4px" onclick="show('dashboard')">Sign in</button>
+        <div class="divider"><div class="divider-line"></div><span class="divider-text">Or continue with</span><div class="divider-line"></div></div>
+        <button class="google-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+        <p style="margin-top:20px;font-size:11px;color:var(--muted);text-align:center">Protected by Mekanism SSO. Unauthorized access is prohibited.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ DASHBOARD ═══════════════════════════════ -->
+<div class="screen" id="screen-dashboard">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">M</div>
+        <div><div class="logo-text">Mekanism</div><div class="logo-sub">ATS Platform</div></div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-item active"><span class="nav-icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('vendors')"><span class="nav-icon">🏢</span> Vendors</div>
+        <div class="nav-item" onclick="show('requisitions')"><span class="nav-icon">📄</span> Requisitions</div>
+        <div class="nav-item" onclick="show('candidates')"><span class="nav-icon">👤</span> Candidates</div>
+        <div class="nav-item" onclick="show('analytics')"><span class="nav-icon">📊</span> Analytics</div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-card">
+          <div class="avatar">AK</div>
+          <div><div class="user-name">Arjun Kapoor</div><div class="user-role">Admin</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="topbar">
+        <div class="icon-btn">🔔</div>
+        <div class="icon-btn">⚙</div>
+      </div>
+      <div class="content">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Good morning, Arjun 👋</div>
+            <div class="page-sub">Here's what's happening in your ATS today.</div>
+          </div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#eff6ff">📄</div>
+            <div><div class="stat-val">12</div><div class="stat-label">Open Requisitions</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#f5f3ff">👤</div>
+            <div><div class="stat-val">148</div><div class="stat-label">Total Submissions</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#f0fdf4">🏢</div>
+            <div><div class="stat-val">24</div><div class="stat-label">Active Vendors</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#fffbeb">✅</div>
+            <div><div class="stat-val">31</div><div class="stat-label">Total Hires</div></div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Candidate Pipeline</div>
+            <div class="chart-placeholder">
+              <div class="bar" style="height:80%;background:#3b82f6;opacity:.85"></div>
+              <div class="bar" style="height:60%;background:#3b82f6;opacity:.7"></div>
+              <div class="bar" style="height:45%;background:#3b82f6;opacity:.6"></div>
+              <div class="bar" style="height:38%;background:#3b82f6;opacity:.5"></div>
+              <div class="bar" style="height:28%;background:#3b82f6;opacity:.4"></div>
+              <div class="bar" style="height:20%;background:#10b981;opacity:.85"></div>
+              <div class="bar" style="height:10%;background:#ef4444;opacity:.7"></div>
+            </div>
+            <div style="display:flex;justify-content:space-around;padding:6px 8px;font-size:10px;color:var(--muted)">
+              <span>Submitted</span><span>Screened</span><span>Short.</span><span>Int. Sched</span><span>Int. Done</span><span>Hired</span><span>Rejected</span>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">🏆 Top Performing Vendors</div>
+            <div style="margin-top:8px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:12px;color:var(--muted);width:16px">1</span>
+                <div style="flex:1">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:500">TechServ Solutions</span><span style="color:var(--muted)">12 hires / 38%</span></div>
+                  <div style="height:6px;background:var(--muted-bg);border-radius:3px"><div style="width:38%;height:100%;background:var(--primary);border-radius:3px"></div></div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:12px;color:var(--muted);width:16px">2</span>
+                <div style="flex:1">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:500">DevMatch India</span><span style="color:var(--muted)">9 hires / 30%</span></div>
+                  <div style="height:6px;background:var(--muted-bg);border-radius:3px"><div style="width:30%;height:100%;background:var(--primary);border-radius:3px"></div></div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:12px;color:var(--muted);width:16px">3</span>
+                <div style="flex:1">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:500">HirePro</span><span style="color:var(--muted)">6 hires / 24%</span></div>
+                  <div style="height:6px;background:var(--muted-bg);border-radius:3px"><div style="width:24%;height:100%;background:var(--primary);border-radius:3px"></div></div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:12px;color:var(--muted);width:16px">4</span>
+                <div style="flex:1">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:500">StaffBridge</span><span style="color:var(--muted)">4 hires / 18%</span></div>
+                  <div style="height:6px;background:var(--muted-bg);border-radius:3px"><div style="width:18%;height:100%;background:var(--primary);border-radius:3px"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Quick Actions</div>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <button class="btn btn-outline" onclick="show('vendor-form')">+ Add Vendor</button>
+            <button class="btn btn-outline" onclick="show('req-form')">+ Create Requisition</button>
+            <button class="btn btn-outline" onclick="show('candidates')">Submit Candidate</button>
+            <button class="btn btn-outline" onclick="show('analytics')">View Reports</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ VENDORS ═════════════════════════════════ -->
+<div class="screen" id="screen-vendors">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon">M</div><div><div class="logo-text">Mekanism</div><div class="logo-sub">ATS Platform</div></div></div>
+      <div class="sidebar-nav">
+        <div class="nav-item" onclick="show('dashboard')"><span class="nav-icon">⊞</span> Dashboard</div>
+        <div class="nav-item active"><span class="nav-icon">🏢</span> Vendors</div>
+        <div class="nav-item" onclick="show('requisitions')"><span class="nav-icon">📄</span> Requisitions</div>
+        <div class="nav-item" onclick="show('candidates')"><span class="nav-icon">👤</span> Candidates</div>
+        <div class="nav-item" onclick="show('analytics')"><span class="nav-icon">📊</span> Analytics</div>
+      </div>
+      <div class="sidebar-user"><div class="user-card"><div class="avatar">AK</div><div><div class="user-name">Arjun Kapoor</div><div class="user-role">Admin</div></div></div></div>
+    </div>
+    <div class="main">
+      <div class="topbar"><div class="icon-btn">🔔</div><div class="icon-btn">⚙</div></div>
+      <div class="content">
+        <div class="page-header">
+          <div><div class="page-title">Vendors</div><div class="page-sub">Manage vendor registrations and performance</div></div>
+          <button class="btn btn-primary" onclick="show('vendor-form')">+ Register Vendor</button>
+        </div>
+        <div class="table-card">
+          <div class="table-toolbar">
+            <div class="search-box">🔍 <span>Search vendors...</span></div>
+            <select class="filter-select"><option>All Statuses</option><option>Active</option><option>Pending</option><option>Inactive</option></select>
+          </div>
+          <table>
+            <thead><tr><th>Company</th><th>Location</th><th>Status</th><th>Rating</th><th>Submissions</th><th>Hires</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div class="company-cell"><div class="company-avatar">T</div><div><div style="font-weight:500">TechServ Solutions</div><div style="font-size:11px;color:var(--muted)">techserv.in</div></div></div></td><td style="color:var(--muted)">Mumbai, India</td><td><span class="badge badge-green">Active</span></td><td>⭐ 4.8</td><td>32</td><td>12</td><td style="color:var(--muted)">Jan 2026</td><td><span class="link-action">Edit</span></td></tr>
+              <tr><td><div class="company-cell"><div class="company-avatar">D</div><div><div style="font-weight:500">DevMatch India</div><div style="font-size:11px;color:var(--muted)">devmatch.io</div></div></div></td><td style="color:var(--muted)">Bengaluru, India</td><td><span class="badge badge-green">Active</span></td><td>⭐ 4.5</td><td>30</td><td>9</td><td style="color:var(--muted)">Feb 2026</td><td><span class="link-action">Edit</span></td></tr>
+              <tr><td><div class="company-cell"><div class="company-avatar">H</div><div><div style="font-weight:500">HirePro</div></div></div></td><td style="color:var(--muted)">Ahmedabad, India</td><td><span class="badge badge-green">Active</span></td><td>⭐ 4.2</td><td>25</td><td>6</td><td style="color:var(--muted)">Mar 2026</td><td><span class="link-action">Edit</span></td></tr>
+              <tr><td><div class="company-cell"><div class="company-avatar">S</div><div><div style="font-weight:500">StaffBridge</div></div></div></td><td style="color:var(--muted)">Pune, India</td><td><span class="badge badge-yellow">Pending</span></td><td>⭐ 3.9</td><td>22</td><td>4</td><td style="color:var(--muted)">Apr 2026</td><td><span class="link-action">Edit</span></td></tr>
+              <tr><td><div class="company-cell"><div class="company-avatar">R</div><div><div style="font-weight:500">RecruitEdge</div></div></div></td><td style="color:var(--muted)">Delhi, India</td><td><span class="badge badge-gray">Inactive</span></td><td>⭐ 3.2</td><td>18</td><td>2</td><td style="color:var(--muted)">Jan 2026</td><td><span class="link-action">Edit</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ADD VENDOR FORM ══════════════════════════════ -->
+<div class="screen" id="screen-vendor-form">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon">M</div><div><div class="logo-text">Mekanism</div><div class="logo-sub">ATS Platform</div></div></div>
+      <div class="sidebar-nav">
+        <div class="nav-item" onclick="show('dashboard')"><span class="nav-icon">⊞</span> Dashboard</div>
+        <div class="nav-item active"><span class="nav-icon">🏢</span> Vendors</div>
+        <div class="nav-item" onclick="show('requisitions')"><span class="nav-icon">📄</span> Requisitions</div>
+        <div class="nav-item" onclick="show('candidates')"><span class="nav-icon">👤</span> Candidates</div>
+        <div class="nav-item" onclick="show('analytics')"><span class="nav-icon">📊</span> Analytics</div>
+      </div>
+      <div class="sidebar-user"><div class="user-card"><div class="avatar">AK</div><div><div class="user-name">Arjun Kapoor</div><div class="user-role">Admin</div></div></div></div>
+    </div>
+    <div class="main">
+      <div class="topbar"><div class="icon-btn">🔔</div><div class="icon-btn">⚙</div></div>
+      <div class="content" style="display:flex;align-items:flex-start;justify-content:center">
+        <div class="modal" style="position:static;width:560px;box-shadow:0 4px 24px rgba(0,0,0,.08)">
+          <div class="modal-header">
+            <div class="modal-title">Register New Vendor</div>
+            <div class="modal-close" onclick="show('vendors')">✕</div>
+          </div>
+          <div class="modal-body">
+            <div class="form-group-modal"><label class="form-label">Company Name *</label><input class="form-input-modal" placeholder="e.g. TechServ Solutions" /></div>
+            <div class="form-grid">
+              <div class="form-group-modal"><label class="form-label">City</label><input class="form-input-modal" placeholder="Mumbai" /></div>
+              <div class="form-group-modal"><label class="form-label">Country</label><input class="form-input-modal" value="India" /></div>
+            </div>
+            <div class="form-group-modal"><label class="form-label">Website</label><input class="form-input-modal" placeholder="https://vendor.com" /></div>
+            <div class="form-grid">
+              <div class="form-group-modal"><label class="form-label">Contract Start</label><input class="form-input-modal" type="date" /></div>
+              <div class="form-group-modal"><label class="form-label">Contract End</label><input class="form-input-modal" type="date" /></div>
+            </div>
+            <div class="form-group-modal"><label class="form-label">Notes</label><textarea class="form-input-modal" rows="2" placeholder="Any special notes..."></textarea></div>
+            <div class="form-section">
+              <div class="form-section-title">Primary Contact</div>
+              <div class="form-grid">
+                <div class="form-group-modal"><label class="form-label">Name *</label><input class="form-input-modal" placeholder="John Doe" /></div>
+                <div class="form-group-modal"><label class="form-label">Email *</label><input class="form-input-modal" placeholder="john@vendor.com" /></div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group-modal"><label class="form-label">Phone</label><input class="form-input-modal" placeholder="+91 98765 43210" /></div>
+                <div class="form-group-modal"><label class="form-label">Designation</label><input class="form-input-modal" placeholder="Recruitment Manager" /></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="show('vendors')">Cancel</button>
+            <button class="btn btn-primary" onclick="show('vendors')">Register Vendor</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ REQUISITIONS ════════════════════════════════ -->
+<div class="screen" id="screen-requisitions">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon">M</div><div><div class="logo-text">Mekanism</div><div class="logo-sub">ATS Platform</div></div></div>
+      <div class="sidebar-nav">
+        <div class="nav-item" onclick="show('dashboard')"><span class="nav-icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('vendors')"><span class="nav-icon">🏢</span> Vendors</div>
+        <div class="nav-item active"><span class="nav-icon">📄</span> Requisitions</div>
+        <div class="nav-item" onclick="show('candidates')"><span class="nav-icon">👤</span> Candidates</div>
+        <div class="nav-item" onclick="show('analytics')"><span class="nav-icon">📊</span> Analytics</div>
+      </div>
+      <div class="sidebar-user"><div class="user-card"><div class="avatar">AK</div><div><div class="user-name">Arjun Kapoor</div><div class="user-role">Admin</div></div></div></div>
+    </div>
+    <div class="main">
+      <div class="topbar"><div class="icon-btn">🔔</div><div class="icon-btn">⚙</div></div>
+      <div class="content">
+        <div class="page-header">
+          <div><div class="page-title">Requisitions</div><div class="page-sub">Create and manage job requisitions</div></div>
+          <button class="btn btn-primary" onclick="show('req-form')">+ New Requisition</button>
+        </div>
+        <div class="table-card">
+          <div class="table-toolbar">
+            <div class="search-box">🔍 <span>Search requisitions...</span></div>
+            <select class="filter-select"><option>All Statuses</option><option>Open</option><option>Draft</option><option>Pending Approval</option><option>Closed</option></select>
+          </div>
+          <table>
+            <thead><tr><th>Code</th><th>Title</th><th>Department</th><th>Status</th><th>Openings</th><th>Closing Date</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--muted)">REQ-A3F12-XYZ</td><td style="font-weight:500">Senior React Developer</td><td style="color:var(--muted)">Engineering</td><td><span class="badge badge-green">Open</span></td><td>3</td><td style="color:var(--muted)">30 Apr 2026</td><td><span class="link-action">View</span></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--muted)">REQ-B7G34-PQR</td><td style="font-weight:500">Node.js Backend Engineer</td><td style="color:var(--muted)">Engineering</td><td><span class="badge badge-green">Open</span></td><td>2</td><td style="color:var(--muted)">05 May 2026</td><td><span class="link-action">View</span></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--muted)">REQ-C9H56-MNO</td><td style="font-weight:500">Product Designer</td><td style="color:var(--muted)">Design</td><td><span class="badge badge-yellow">Pending Approval</span></td><td>1</td><td style="color:var(--muted)">10 May 2026</td><td><span class="link-action">Approve</span></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--muted)">REQ-D2J78-RST</td><td style="font-weight:500">DevOps Engineer</td><td style="color:var(--muted)">Infrastructure</td><td><span class="badge badge-gray">Draft</span></td><td>1</td><td style="color:var(--muted)">—</td><td><span class="link-action">Edit</span></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--muted)">REQ-E5K90-UVW</td><td style="font-weight:500">QA Automation Engineer</td><td style="color:var(--muted)">QA</td><td><span class="badge badge-gray">Closed</span></td><td>2</td><td style="color:var(--muted)">15 Mar 2026</td><td><span class="link-action">View</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NEW REQUISITION FORM ════════════════════════════ -->
+<div class="screen" id="screen-req-form">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon">M</div><div><div class="logo-text">Mekanism</div><div class="logo-sub">ATS Platform</div></div></div>
+      <div class="sidebar-nav">
+        <div class="nav-item" onclick="show('dashboard')"><span class="nav-icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('vendors')"><span class="nav-icon">🏢</span> Vendors</div>
+        <div class="nav-item active"><span class="nav-icon">📄</span> Requisitions</div>
+        <div class="nav-item" onclick="show('candidates')"><span class="nav-icon">👤</span> Candidates</div>
+        <div class="nav-item" onclick="show('analytics')"><span class="nav-icon">📊</span> Analytics</div>
+      </div>
+      <div class="sidebar-user"><div class="user-card"><div class="avatar">AK</div><div><div class="user-name">Arjun Kapoor</div><div class="user-role">Admin</div></div></div></div>
+    </div>
+    <div class="main">
+      <div class="topbar"><div class="icon-btn">🔔</div><div class="icon-btn">⚙</div></div>
+      <div class="content" style="display:flex;align-items:flex-start;justify-content:center">
+        <div class="modal" style="position:static;width:640px;box-shadow:0 4px 24px rgba(0,0,0,.08)">
+          <div class="modal-header"><div class="modal-title">Create Job Requisition</div><div class="modal-close" onclick="show('requisitions')">✕</div></div>
+          <div class="modal-body">
+            <div class="form-group-modal"><label class="form-label">Job Title *</label><input class="form-input-modal" placeholder="e.g. Senior React Developer" /></div>
+            <div class="form-grid">
+              <div class="form-group-modal"><label class="form-label">Department</label><input class="form-input-modal" placeholder="Engineering" /></div>
+              <div class="form-group-modal"><label class="form-label">Location</label><input class="form-input-modal" placeholder="Ahmedabad / Remote" /></div>
+            </div>
+            <div class="form-group-modal"><label class="form-label">Description</label><textarea class="form-input-modal" rows="3" placeholder="Role overview and responsibilities..."></textarea></div>
+            <div class="form-group-modal"><label class="form-label">Requirements</label><textarea class="form-input-modal" rows="3" placeholder="Skills, qualifications, experience required..."></textarea></div>
+            <div class="form-group-modal"><label class="form-label">Skills (comma-separated)</label><input class="form-input-modal" placeholder="React, TypeScript, Node.js" /></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+              <div class="form-group-modal"><label class="form-label">Openings</label><input class="form-input-modal" type="number" value="1" /></div>
+              <div class="form-group-modal"><label class="form-label">Exp. Min (yrs)</label><input class="form-input-modal" type="number" value="2" /></div>
+              <div class="form-group-modal"><label class="form-label">Exp. Max (yrs)</label><input class="form-input-modal" type="number" value="6" /></div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group-modal"><label class="form-label">Target Start Date</label><input class="form-input-modal" type="date" /></div>
+              <div class="form-group-modal"><label class="form-label">Closing Date</label><input class="form-input-modal" type="date" /></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="show('requisitions')">Cancel</button>
+            <button class="btn btn-primary" onclick="show('requisitions')">Create Requisition</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CANDIDATES ══════════════════════════════════ -->
+<div class="screen" id="screen-candidates">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon">M</div><div><div class="logo-text">Mekanism</div><div class="logo-sub">ATS Platform</div></div></div>
+      <div class="sidebar-nav">
+        <div class="nav-item" onclick="show('dashboard')"><span class="nav-icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('vendors')"><span class="nav-icon">🏢</span> Vendors</div>
+        <div class="nav-item" onclick="show('requisitions')"><span class="nav-icon">📄</span> Requisitions</div>
+        <div class="nav-item active"><span class="nav-icon">👤</span> Candidates</div>
+        <div class="nav-item" onclick="show('analytics')"><span class="nav-icon">📊</span> Analytics</div>
+      </div>
+      <div class="sidebar-user"><div class="user-card"><div class="avatar">AK</div><div><div class="user-name">Arjun Kapoor</div><div class="user-role">Admin</div></div></div></div>
+    </div>
+    <div class="main">
+      <div class="topbar"><div class="icon-btn">🔔</div><div class="icon-btn">⚙</div></div>
+      <div class="content">
+        <div class="page-header">
+          <div><div class="page-title">Candidates</div><div class="page-sub">Track candidate submissions and pipeline</div></div>
+          <button class="btn btn-primary">+ Submit Candidate</button>
+        </div>
+        <div class="chip-row">
+          <div class="chip active">All</div>
+          <div class="chip">Submitted</div>
+          <div class="chip">Screened</div>
+          <div class="chip">Shortlisted</div>
+          <div class="chip">Interview Scheduled</div>
+          <div class="chip">Interview Completed</div>
+          <div class="chip">Offer Extended</div>
+          <div class="chip">Hired</div>
+          <div class="chip">Rejected</div>
+        </div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Candidate</th><th>Requisition</th><th>Vendor</th><th>Status</th><th>Experience</th><th>Submitted</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div><div style="font-weight:500">Ravi Sharma</div><div style="font-size:11px;color:var(--muted)">ravi@gmail.com</div><div style="font-size:11px;color:var(--muted)">React Developer</div></div></td><td><div style="font-weight:500">Senior React Developer</div><div style="font-size:11px;font-family:monospace;color:var(--muted)">REQ-A3F12-XYZ</div></td><td style="color:var(--muted)">TechServ Solutions</td><td><span class="badge badge-purple">Shortlisted</span></td><td style="color:var(--muted)">4 yrs</td><td style="color:var(--muted)">21 Apr</td><td><span class="link-action">Update</span></td></tr>
+              <tr><td><div><div style="font-weight:500">Priya Mehta</div><div style="font-size:11px;color:var(--muted)">priya@gmail.com</div><div style="font-size:11px;color:var(--muted)">Frontend Engineer</div></div></td><td><div style="font-weight:500">Senior React Developer</div><div style="font-size:11px;font-family:monospace;color:var(--muted)">REQ-A3F12-XYZ</div></td><td style="color:var(--muted)">DevMatch India</td><td><span class="badge badge-blue">Submitted</span></td><td style="color:var(--muted)">3 yrs</td><td style="color:var(--muted)">22 Apr</td><td><span class="link-action">Update</span></td></tr>
+              <tr><td><div><div style="font-weight:500">Aman Verma</div><div style="font-size:11px;color:var(--muted)">aman@gmail.com</div><div style="font-size:11px;color:var(--muted)">Backend Dev</div></div></td><td><div style="font-weight:500">Node.js Backend Engineer</div><div style="font-size:11px;font-family:monospace;color:var(--muted)">REQ-B7G34-PQR</div></td><td style="color:var(--muted)">HirePro</td><td><span class="badge badge-yellow">Interview Scheduled</span></td><td style="color:var(--muted)">5 yrs</td><td style="color:var(--muted)">20 Apr</td><td><span class="link-action">Update</span></td></tr>
+              <tr><td><div><div style="font-weight:500">Sneha Patel</div><div style="font-size:11px;color:var(--muted)">sneha@gmail.com</div></div></td><td><div style="font-weight:500">Senior React Developer</div><div style="font-size:11px;font-family:monospace;color:var(--muted)">REQ-A3F12-XYZ</div></td><td style="color:var(--muted)">TechServ Solutions</td><td><span class="badge badge-green">Hired</span></td><td style="color:var(--muted)">6 yrs</td><td style="color:var(--muted)">18 Apr</td><td><span class="link-action">View</span></td></tr>
+              <tr><td><div><div style="font-weight:500">Karan Singh</div><div style="font-size:11px;color:var(--muted)">karan@gmail.com</div></div></td><td><div style="font-weight:500">Node.js Backend Engineer</div><div style="font-size:11px;font-family:monospace;color:var(--muted)">REQ-B7G34-PQR</div></td><td style="color:var(--muted)">StaffBridge</td><td><span class="badge badge-red">Rejected</span></td><td style="color:var(--muted)">2 yrs</td><td style="color:var(--muted)">19 Apr</td><td><span class="link-action">View</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ANALYTICS ═══════════════════════════════════ -->
+<div class="screen" id="screen-analytics">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon">M</div><div><div class="logo-text">Mekanism</div><div class="logo-sub">ATS Platform</div></div></div>
+      <div class="sidebar-nav">
+        <div class="nav-item" onclick="show('dashboard')"><span class="nav-icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('vendors')"><span class="nav-icon">🏢</span> Vendors</div>
+        <div class="nav-item" onclick="show('requisitions')"><span class="nav-icon">📄</span> Requisitions</div>
+        <div class="nav-item" onclick="show('candidates')"><span class="nav-icon">👤</span> Candidates</div>
+        <div class="nav-item active"><span class="nav-icon">📊</span> Analytics</div>
+      </div>
+      <div class="sidebar-user"><div class="user-card"><div class="avatar">AK</div><div><div class="user-name">Arjun Kapoor</div><div class="user-role">Admin</div></div></div></div>
+    </div>
+    <div class="main">
+      <div class="topbar"><div class="icon-btn">🔔</div><div class="icon-btn">⚙</div></div>
+      <div class="content">
+        <div class="page-header">
+          <div><div class="page-title">Analytics & Reports</div><div class="page-sub">Insights into hiring pipeline and vendor performance</div></div>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px">
+          <div class="chart-title">Hiring Pipeline Funnel</div>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Candidate progression through stages</p>
+          <div class="funnel-bar"><div class="funnel-label">Submitted</div><div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#3b82f6">148</div></div><div class="funnel-count">148</div></div>
+          <div class="funnel-bar"><div class="funnel-label">Screened</div><div class="funnel-track"><div class="funnel-fill" style="width:74%;background:#6366f1">110</div></div><div class="funnel-count">110</div></div>
+          <div class="funnel-bar"><div class="funnel-label">Shortlisted</div><div class="funnel-track"><div class="funnel-fill" style="width:54%;background:#8b5cf6">80</div></div><div class="funnel-count">80</div></div>
+          <div class="funnel-bar"><div class="funnel-label">Interview Sched.</div><div class="funnel-track"><div class="funnel-fill" style="width:38%;background:#f59e0b">57</div></div><div class="funnel-count">57</div></div>
+          <div class="funnel-bar"><div class="funnel-label">Interview Done</div><div class="funnel-track"><div class="funnel-fill" style="width:30%;background:#f97316">44</div></div><div class="funnel-count">44</div></div>
+          <div class="funnel-bar"><div class="funnel-label">Offer Extended</div><div class="funnel-track"><div class="funnel-fill" style="width:22%;background:#14b8a6">33</div></div><div class="funnel-count">33</div></div>
+          <div class="funnel-bar"><div class="funnel-label">Hired</div><div class="funnel-track"><div class="funnel-fill" style="width:21%;background:#16a34a">31</div></div><div class="funnel-count">31</div></div>
+        </div>
+        <div class="table-card">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border)"><strong style="font-size:13px">Vendor Performance Report</strong></div>
+          <table>
+            <thead><tr><th>Vendor</th><th>Status</th><th style="text-align:right">Submissions</th><th style="text-align:right">Hires</th><th style="text-align:right">Hire Rate</th><th style="text-align:right">Rating</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:500">TechServ Solutions</td><td><span class="badge badge-green">Active</span></td><td style="text-align:right">32</td><td style="text-align:right">12</td><td style="text-align:right;color:var(--success);font-weight:500">37.5%</td><td style="text-align:right">⭐ 4.8</td></tr>
+              <tr><td style="font-weight:500">DevMatch India</td><td><span class="badge badge-green">Active</span></td><td style="text-align:right">30</td><td style="text-align:right">9</td><td style="text-align:right;color:var(--success);font-weight:500">30.0%</td><td style="text-align:right">⭐ 4.5</td></tr>
+              <tr><td style="font-weight:500">HirePro</td><td><span class="badge badge-green">Active</span></td><td style="text-align:right">25</td><td style="text-align:right">6</td><td style="text-align:right;color:var(--success);font-weight:500">24.0%</td><td style="text-align:right">⭐ 4.2</td></tr>
+              <tr><td style="font-weight:500">StaffBridge</td><td><span class="badge badge-yellow">Pending</span></td><td style="text-align:right">22</td><td style="text-align:right">4</td><td style="text-align:right;color:var(--muted);font-weight:500">18.2%</td><td style="text-align:right">⭐ 3.9</td></tr>
+              <tr><td style="font-weight:500">RecruitEdge</td><td><span class="badge badge-gray">Inactive</span></td><td style="text-align:right">18</td><td style="text-align:right">2</td><td style="text-align:right;color:var(--muted);font-weight:500">11.1%</td><td style="text-align:right">⭐ 3.2</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.wf-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  const tabs = {
+    login: 0, dashboard: 1, vendors: 2, 'vendor-form': 3,
+    requisitions: 4, 'req-form': 5, candidates: 6, analytics: 7
+  };
+  document.querySelectorAll('.wf-tab')[tabs[screen]]?.classList.add('active');
+}
+</script>
+</body>
+</html>
