@@ -64,9 +64,9 @@ app.use((err, req, res, next) => {
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🚀 Mekanism ATS API running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}\n`);
+  console.log(`\n-> Mekanism ATS API running on http://localhost:${PORT}`);
+  console.log(` -> Health check: http://localhost:${PORT}/health`);
+  console.log(` -> Environment: ${process.env.NODE_ENV || "development"}\n`);
 });
 
 export default app;
