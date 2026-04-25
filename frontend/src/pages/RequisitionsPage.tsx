@@ -142,9 +142,9 @@ export const RequisitionsPage = () => {
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input className="input-field pl-9" placeholder="Search requisitions..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input className="input-field !pl-9" placeholder="Search requisitions..." aria-label="Search requisitions" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <select className="input-field w-auto" value={status} onChange={(e) => setStatus(e.target.value)}>
+        <select className="input-field w-auto" aria-label="Filter requisitions by status" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">All Statuses</option>
           {STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, " ")}</option>)}
         </select>

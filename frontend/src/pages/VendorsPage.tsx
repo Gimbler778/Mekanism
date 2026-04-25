@@ -124,14 +124,16 @@ export const VendorsPage = () => {
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
-            className="input-field pl-9"
+            className="input-field !pl-9"
             placeholder="Search vendors..."
+            aria-label="Search vendors"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <select
           className="input-field w-auto"
+          aria-label="Filter vendors by status"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         >

@@ -40,8 +40,8 @@ const SubmitCandidateForm = ({ onClose }: any) => {
         </div>
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1.5">Requisition *</label>
-            <select className="input-field" value={form.requisitionId} onChange={(e) => set("requisitionId", e.target.value)}>
+            <label htmlFor="submission-requisition" className="block text-sm font-medium mb-1.5">Requisition *</label>
+            <select id="submission-requisition" className="input-field" value={form.requisitionId} onChange={(e) => set("requisitionId", e.target.value)}>
               <option value="">Select a requisition...</option>
               {(reqData || []).map((r: any) => (
                 <option key={r.id} value={r.id}>{r.requisitionCode} — {r.title}</option>
@@ -150,8 +150,8 @@ const StatusUpdateModal = ({ submission, onClose }: any) => {
             <p className="text-sm text-muted-foreground mb-3">
               Candidate: <strong>{submission.candidateName}</strong>
             </p>
-            <label className="block text-sm font-medium mb-1.5">New Status</label>
-            <select className="input-field" value={status} onChange={(e) => setStatus(e.target.value)}>
+            <label htmlFor="submission-status" className="block text-sm font-medium mb-1.5">New Status</label>
+            <select id="submission-status" className="input-field" value={status} onChange={(e) => setStatus(e.target.value)}>
               {CANDIDATE_STATUSES.map((s) => (
                 <option key={s} value={s}>{s.replace(/_/g, " ")}</option>
               ))}
