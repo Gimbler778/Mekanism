@@ -11,6 +11,11 @@ const generateToken = (userId) => {
   });
 };
 
+const isGoogleHostedEmail = (email = "") => {
+  const normalized = email.toLowerCase();
+  return normalized.endsWith("@gmail.com") || normalized.endsWith("@googlemail.com");
+};
+
 export const register = async (req, res, next) => {
   try {
     const { email, password, firstName, lastName, role } = req.body;
@@ -61,14 +66,30 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = email.toLowerCase();
 
     const [user] = await db
       .select()
       .from(users)
-      .where(eq(users.email, email.toLowerCase()))
+      .where(eq(users.email, normalizedEmail))
       .limit(1);
 
-    if (!user || !user.passwordHash) {
+    if (!user) {
+      if (isGoogleHostedEmail(normalizedEmail)) {
+        return res.status(404).json({
+          error: "Email not registered. Please use Google sign-in.",
+        });
+      }
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    if (!user.passwordHash) {
+      if (user.oauthProvider === "google") {
+        return res.status(400).json({
+          error: "This account is registered with Google. Please continue with Google.",
+        });
+      }
+
       return res.status(401).json({ error: "Invalid credentials" });
     }
 

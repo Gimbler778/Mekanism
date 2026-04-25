@@ -5,8 +5,8 @@ import { useAuth } from "../hooks/useAuth";
 export const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@mekanism.tech");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,7 +33,7 @@ export const LoginPage = () => {
             <div className="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center">
               <span className="text-white font-bold text-lg">M</span>
             </div>
-            <span className="text-white font-semibold text-xl">Mekanism ATS</span>
+            <span className="text-white font-semibold text-xl">MekaHire</span>
           </div>
         </div>
         <div>
@@ -43,19 +43,6 @@ export const LoginPage = () => {
           <p className="text-white/70 text-lg">
             Centralized applicant tracking for vendor management, candidate submissions, and hiring analytics.
           </p>
-          <div className="mt-10 grid grid-cols-2 gap-4">
-            {[
-              { label: "Vendors Managed", value: "50+" },
-              { label: "Candidates Tracked", value: "2,400+" },
-              { label: "Roles Filled", value: "180+" },
-              { label: "Time Saved", value: "60%" },
-            ].map(({ label, value }) => (
-              <div key={label} className="bg-white/10 rounded-xl p-4">
-                <p className="text-white text-2xl font-bold">{value}</p>
-                <p className="text-white/60 text-sm mt-1">{label}</p>
-              </div>
-            ))}
-          </div>
         </div>
         <p className="text-white/40 text-sm">© 2026 Mekanism Technologies</p>
       </div>
@@ -64,7 +51,7 @@ export const LoginPage = () => {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
+            <h2 className="text-2xl font-bold text-foreground">Welcome </h2>
             <p className="text-muted-foreground mt-1">Sign in to your account to continue</p>
           </div>
 
@@ -90,6 +77,9 @@ export const LoginPage = () => {
                 placeholder="••••••••"
                 required
               />
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                If your account was created with Google, use Continue with Google.
+              </p>
             </div>
 
             {error && (
@@ -131,7 +121,7 @@ export const LoginPage = () => {
           </div>
 
           <p className="mt-8 text-xs text-muted-foreground text-center">
-            Protected by Mekanism SSO. Unauthorized access is prohibited.
+            Protected by SSO. Unauthorized access is prohibited.
           </p>
         </div>
       </div>

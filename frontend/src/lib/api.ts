@@ -16,7 +16,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401) {
+    const requestUrl = error.config?.url || "";
+    const isLoginOrRegisterRequest =
+      requestUrl.includes("/auth/login") || requestUrl.includes("/auth/register");
+
+    if (error.response?.status === 401 && !isLoginOrRegisterRequest) {
       localStorage.removeItem("ats_token");
       window.location.href = "/login";
     }
